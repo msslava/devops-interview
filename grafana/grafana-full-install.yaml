@@ -41,19 +41,19 @@ spec:
   type: NodePort
 
 ---
-apiVersion: v1
-kind: Service
+apiVersion: networking.k8s.io/v1beta1
+kind: Ingress
 metadata:
-  name: grafana-service
+  name: grafana-ingress
   namespace: ingress-nginx
-  labels:
-    app: grafana-server
+  annotations:
+    nginx.ingress.kubernetes.io/rewrite-target: /
 spec:
-  selector:
-    app: grafana-server
-  ports:
-    - protocol: TCP
-      port: 3000
-      targetPort: 3000
-      nodePort: 30322
-  type: NodePort
+  rules:
+  - host: devops-interview.grafana.local
+    http:
+      paths:
+      - path: /
+        backend:
+          serviceName: grafana-service
+          servicePort: 3000
